@@ -84,7 +84,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   //2)verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
 
   //3) check if user still exists
   const freshUser = await User.findById(decoded.id);
@@ -104,6 +103,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant acess to protected route
   req.user = freshUser;
+  
   next();
 });
 
