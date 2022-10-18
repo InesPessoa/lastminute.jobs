@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "connect employees with employers",
   "main": "nodemon server.js",
+  "engines": {
+    "node": "= 14.20.1"
+  },
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
