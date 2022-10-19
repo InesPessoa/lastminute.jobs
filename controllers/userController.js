@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const FormatResponse = require("../utils/formatResponse")
 
 const filterObj = (obj, ...allowerdFields) => {
   const newObj = {};
@@ -8,6 +9,20 @@ const filterObj = (obj, ...allowerdFields) => {
     if (allowerdFields.includes(el)) newObj[el] = obj[el];
   });
   return newObj;
+};
+
+getAllUsers = async (req, res, query, next) => {
+  const apiFeatures = new FormatResponse(query, req.query)
+    .limitFields()
+    .paginate();
+
+  const users = await apiFeatures.query;
+
+  res.status(200).json({
+    status: "sucess",
+    requestedAt: req.requestTime,
+    data: { users: users },
+  });
 };
 
 
@@ -23,7 +38,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   // filter out unwanted field names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, "name", "email", "role", "comments", "rating");
+  const filteredBody = filterObj(req.body,
+     "name", "email", "role",
+      "comments", "rating",
+      "commentsGiven", "ratingGiven");
 
   //update user document
   const updateUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
@@ -52,4 +70,16 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  getAllUsers(req, res, User.find(), next)
+});
+
+
+exports.getEmployees = catchAsync(async (req, res, next) => {
+  getAllUsers(req, res, User.find().where("role").equals("employee"), next)
+});
+
+exports.getEmployers = catchAsync(async (req, res, next) => {
+  getAllUsers(req, res, User.find().where("role").equals("employer"), next)
+});
 

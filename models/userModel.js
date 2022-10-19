@@ -51,7 +51,9 @@ const userSchema = new mongoose.Schema({
   description: String,
   location: String,
   comments: [String],
-  rating: [Number]
+  ratings: [Number],
+  commentsGiven: {type: {id: String, comment: String}, select: false},
+  ratingsGiven: {type: {id: String, rating: Number}, select: false}
 });
 
 
