@@ -19,7 +19,7 @@ const jobSchema = new mongoose.Schema({
     description: String,
     postDate: {
       type: Date,
-      default: new Date.now()
+      default: Date.now()
     },
     executionDate: {
       type: Date,
@@ -56,10 +56,11 @@ const jobSchema = new mongoose.Schema({
     },
   });
   
-  userSchema.pre(/^find/, function (next) {
+  jobSchema.pre(/^find/, function (next) {
     this.find({ active: { $ne: false } });
     next();
   });
-  
+
+
   const Job = mongoose.model("Job", jobSchema);
   module.exports = Job;
