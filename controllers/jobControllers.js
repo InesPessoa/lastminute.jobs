@@ -1,6 +1,43 @@
 const Job = require("./../models/jobModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const FormatResponse = require("../utils/formatResponse");
+const User = require("../models/userModel");
+const {filterObj} = require("./../utils/editRequest")
+
+checkJobBelgonsToEmployer = async (req) => {
+    const employerId = req.user.id;
+    let job;
+    try{
+        job = await Job.findById(req.params.id);
+    }catch{
+        job = null;
+    }
+    if (!job){
+        return new AppError("No job found with that id", 404);
+    }
+    if (job.employerId!=employerId){
+        return new AppError("The job doesn't belong to the user logged in", 404)
+    }
+    return job;
+}
+  //move this to utils
+getAll = async (req, res, query, next) => {
+    console.log("entrou no get all")
+    const apiFeatures = new FormatResponse(query, req.query)
+      .limitFields()
+      .paginate();
+
+    console.log("entrou no get all2")
+  
+    const jobs = await apiFeatures.query;
+  
+    res.status(200).json({
+      status: "sucess",
+      requestedAt: req.requestTime,
+      data: { jobs: jobs },
+    });
+};
 
 exports.createJob = catchAsync(async (req, res, next) => {
     //confirm is an employer, needs to be an employer to post a job
@@ -24,14 +61,59 @@ exports.createJob = catchAsync(async (req, res, next) => {
     });
   });
 
-  //TODO GET JOBS
 
-  //TODO GET A JOB By ID
+exports.getAllJobs = catchAsync(async (req, res, next) => {
+    getAll(req, res, Job.find(), next)
+});
 
-  //TODO get jobs of an employee (active + inactive)
+  //get all the open jobs and with date bigget than now
+exports.getOpenJobs = catchAsync(async (req, res, next) => {
+    getAll(req, res, Job.find().where("status").equals("open"), next)
+});
 
-  //TODO update job (only available for jobs that belong to a certain user)
+  // get jobs of an employee (active)
+exports.getMyJobs = catchAsync(async (req, res, next) => {
+    getAll(req, res, Job.find().where("employerId").equals(req.user.id), next)
+});
 
-  //TODO delete a job
+exports.getJob = catchAsync(async (req, res, next) => {
+    let job;
+    try {;
+      job = await Job.findById(req.params.id);
+    } catch (err) {
+      job = null;
+    }
+    if (!job) {
+      return next(new AppError("No job found with that ID", 404));
+    }
+    res.status(200).json({
+      status: "sucess",
+      data: { job: job },
+    });
+});
 
-  //TODO cron job to check the date of the job and change the status
+exports.updateJob = catchAsync(async (req, res, next) => {
+    const job = await checkJobBelgonsToEmployer(req);
+    const filteredBody = filterObj(req.body,
+        "description", "hourlyRate") //the ourly rate can only be higher
+    const hourlyRate = req.body.hourlyRate;
+    if (req.body.hasOwnProperty("hourlyRate") && (hourlyRate < job.hourlyRate)){
+      return next(new AppError("The hourly rate can only be higher", 400))
+    }
+    await Job.update({_id: req.params.id}, filteredBody);
+    const updatedJob = await Job.findById(req.params.id)
+    res.status(200).json({
+      status: "sucess",
+      job: updatedJob,
+    });
+  });
+  
+exports.deleteJob = catchAsync(async (req, res, next) => {
+    const job = checkJobBelgonsToEmployer(req);
+    job.active = false;
+    await Job.update({_id: req.params.id}, job);
+    res.status(204).json({
+      status: "sucess",
+      data: null,
+    });
+  });

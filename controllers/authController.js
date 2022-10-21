@@ -67,6 +67,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log("start protect")
   //1) getting the token and check if it's there
   let token;
   if (
@@ -104,6 +105,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant acess to protected route
   req.user = freshUser;
+  console.log("end protect")
 
   next();
 });

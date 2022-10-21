@@ -2,14 +2,7 @@ const User = require("./../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const FormatResponse = require("../utils/formatResponse")
-
-const filterObj = (obj, ...allowerdFields) => {
-  const newObj = {};
-  Object.keys(obj).forEach((el) => {
-    if (allowerdFields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
+const {filterObj} = require("./../utils/editRequest")
 
 getAllUsers = async (req, res, query, next) => {
   const apiFeatures = new FormatResponse(query, req.query)
@@ -41,7 +34,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body,
      "name", "email", "role",
       "comments", "rating",
-      "commentsGiven", "ratingGiven");
+      "commentsGiven", "ratingGiven");  //listed nly allowed fields to be updated
 
   //update user document
   const updateUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {

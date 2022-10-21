@@ -21,6 +21,9 @@ const jobSchema = new mongoose.Schema({
       type: Date,
       default: Date.now()
     },
+    updateDate: {
+        type: Date
+      },
     executionDate: {
       type: Date,
       required: [true, "Please provide an execution date"]
@@ -52,7 +55,7 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide the status of the job."],
         default: "open",
-        enum: ["open", "filled", "completed", "excluded"],
+        enum: ["open", "filled", "completed"],
     },
   });
   
@@ -61,6 +64,11 @@ const jobSchema = new mongoose.Schema({
     next();
   });
 
+  //TODO update date of change
+  jobSchema.pre(/^update/, function (next) {
+    this.updateDate = Date.now();
+    next();
+  });
 
   const Job = mongoose.model("Job", jobSchema);
   module.exports = Job;
