@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-//employeeId, employeerId, jobId, dateSubmittion, status;
-
 const applicationSchema = new mongoose.Schema({
     employerId: {
       type: String,
@@ -35,9 +33,9 @@ const applicationSchema = new mongoose.Schema({
   //user needs to have a deposit treshold to apply, cassion
 
   //only employer or employee can see their applications
-  // all employees start with a vistual balance of 100 dolars
+  // all employees start with a virtual balance of 100 dolars
   //endpoints for payments
-  //employee can nly apply if they have a balance equal to the hourly rate * nhours
+  //employee can only apply if they have a balance equal to the hourly rate * nhours
   //create or delete, for the employee
   //update by employer to uodate the status
 
