@@ -10,7 +10,8 @@ const jobSchema = new mongoose.Schema({
       required: [true, "A job needs an employer id associated."],
     },
     employeeId: {
-        type: [String]
+        type: [String],
+        default: []
     },
     nPositions: {
         type: Number,
