@@ -5,21 +5,16 @@ const applicationController = require("../controllers/applicationController");
 const router = express.Router();
 
 router
-  .route("/employeeApplications")
+  .route("/myApplications")
   .get(authController.protect, applicationController.listEmployeeApplications);
 
 router
   .route("/jobApplications/:id")
   .get(authController.protect, applicationController.listJobApplications);
 
-
 router
-  .route("/accept/:id")
-  .patch(authController.protect, applicationController.acceptApplications);
-
-router
-  .route("/reject/:id")
-  .patch(authController.protect, applicationController.declineApplications);
+  .route("/status/:id")
+  .patch(authController.protect, applicationController.applicationStatus);
 
 router
   .route("/:id")
@@ -27,6 +22,7 @@ router
   .post(authController.protect, applicationController.apply)
   .delete(authController.protect, applicationController.deleteApplication);
 
+//TODO This endpoint is redundant with job applications
 router
   .route("/")
   .get(authController.protect, applicationController.listAllApplication);

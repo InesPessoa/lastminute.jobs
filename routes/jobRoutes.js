@@ -5,12 +5,10 @@ const jobController = require("./../controllers/jobControllers");
 const router = express.Router();
 
 router
-  .route("/getOpenJobs")
+  .route("/openJobs")
   .get(authController.protect, jobController.getOpenJobs);
 
-router
-  .route("/getMyJobs")
-  .get(authController.protect, jobController.getMyJobs);
+router.route("/myJobs").get(authController.protect, jobController.getMyJobs);
 
 router
   .route("/")

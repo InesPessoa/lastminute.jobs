@@ -3,9 +3,23 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-//id, name, email, password, passwordConfirm, passwordChangedAt,
-//passwordResetToken, passwordResetExpires, role, active,
-//category, description, location, comments, rating
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      user:
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string
+ *            description: Manager address
+ *          email:
+ *            type: string
+ *            description: Manager username or null
+ *          role:
+ *            type: string
+ *            description: True if manager deleted account
+ */
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -24,7 +38,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please provide your role"],
     enum: ["employer", "employee"],
   },
-  passwordChangedAt: Date,
+  passwordChangedAt: Date, //TODO select false
   password: {
     type: String,
     required: [true, "Please provide a password"],
@@ -39,9 +53,10 @@ const userSchema = new mongoose.Schema({
         return el === this.password;
       },
     },
+    select: false,
   },
-  passwordResetToken: String,
-  passwordResetExpires: Date,
+  passwordResetToken: String, //TODO select false
+  passwordResetExpires: Date, //TODO select false
   active: {
     type: Boolean,
     default: true,
@@ -52,10 +67,9 @@ const userSchema = new mongoose.Schema({
   location: String,
   comments: [String],
   ratings: [Number],
-  commentsGiven: {type: {id: String, comment: String}, select: false},
-  ratingsGiven: {type: {id: String, rating: Number}, select: false}
+  commentsGiven: { type: { id: String, comment: String }, select: false },
+  ratingsGiven: { type: { id: String, rating: Number }, select: false },
 });
-
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

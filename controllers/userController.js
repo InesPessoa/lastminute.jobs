@@ -1,8 +1,8 @@
 const User = require("./../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
-const FormatResponse = require("../utils/formatResponse")
-const {filterObj} = require("./../utils/editRequest")
+const FormatResponse = require("../utils/formatResponse");
+const { filterObj } = require("./../utils/editRequest");
 
 getAllUsers = async (req, res, query, next) => {
   const apiFeatures = new FormatResponse(query, req.query)
@@ -18,10 +18,12 @@ getAllUsers = async (req, res, query, next) => {
   });
 };
 
-
 exports.updateMe = catchAsync(async (req, res, next) => {
   // create error if the user posts password data
-  if (req.body.hasOwnProperty("password") ||req.body.hasOwnProperty("passwordConfirm")) {
+  if (
+    req.body.hasOwnProperty("password") ||
+    req.body.hasOwnProperty("passwordConfirm")
+  ) {
     return next(
       new AppError(
         "This route is not for password updates. Please use updateMyPassword",
@@ -31,10 +33,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   // filter out unwanted field names that are not allowed to be updated
-  const filteredBody = filterObj(req.body,
-     "name", "email", "role",
-      "comments", "rating",
-      "commentsGiven", "ratingGiven");  //listed nly allowed fields to be updated
+  const filteredBody = filterObj(
+    req.body,
+    "name",
+    "email",
+    "role",
+    "comments",
+    "rating",
+    "commentsGiven",
+    "ratingGiven"
+  ); //listed nly allowed fields to be updated
 
   //update user document
   const updateUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
@@ -54,7 +62,6 @@ exports.getMe = catchAsync(async (req, res, next) => {
   });
 });
 
-
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(204).json({
@@ -64,15 +71,13 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
-  getAllUsers(req, res, User.find(), next)
+  getAllUsers(req, res, User.find(), next);
 });
 
-
 exports.getEmployees = catchAsync(async (req, res, next) => {
-  getAllUsers(req, res, User.find().where("role").equals("employee"), next)
+  getAllUsers(req, res, User.find().where("role").equals("employee"), next);
 });
 
 exports.getEmployers = catchAsync(async (req, res, next) => {
-  getAllUsers(req, res, User.find().where("role").equals("employer"), next)
+  getAllUsers(req, res, User.find().where("role").equals("employer"), next);
 });
-

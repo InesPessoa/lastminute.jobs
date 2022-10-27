@@ -31,12 +31,27 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "sucess",
     token: token,
-    data: {
-      user,
-    },
+    user,
   });
 };
 
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      user:
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string
+ *            description: Manager address
+ *          email:
+ *            type: string
+ *            description: Manager username or null
+ *          role:
+ *            type: string
+ *            description: True if manager deleted account
+ */
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -67,7 +82,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log("start protect")
+  console.log("start protect");
   //1) getting the token and check if it's there
   let token;
   if (
@@ -88,7 +103,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   //3) check if user still exists
   const freshUser = await User.findById(decoded.id)
-  .select("+commentsGiven").select("+ratingsGiven");
+    .select("+commentsGiven")
+    .select("+ratingsGiven");
   if (!freshUser) {
     return next(
       new AppError("The user beloging to this token no longer exists.", 401)
@@ -105,7 +121,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant acess to protected route
   req.user = freshUser;
-  console.log("end protect")
+  console.log("end protect");
 
   next();
 });
