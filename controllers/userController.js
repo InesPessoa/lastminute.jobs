@@ -3,6 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const FormatResponse = require("../utils/formatResponse");
 const { filterObj } = require("./../utils/editRequest");
+const url = require("url");
 
 getAllUsers = async (req, res, query, next) => {
   const apiFeatures = new FormatResponse(query, req.query)
@@ -35,14 +36,13 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // filter out unwanted field names that are not allowed to be updated
   const filteredBody = filterObj(
     req.body,
-    "name",
     "email",
     "role",
     "comments",
     "rating",
     "commentsGiven",
-    "ratingGiven"
-  ); //listed nly allowed fields to be updated
+    "ratingGiven" //Todo add password related fields
+  ); //listed only allowed fields to be updated
 
   //update user document
   const updateUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
@@ -71,13 +71,18 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
-  getAllUsers(req, res, User.find(), next);
-});
-
-exports.getEmployees = catchAsync(async (req, res, next) => {
-  getAllUsers(req, res, User.find().where("role").equals("employee"), next);
-});
-
-exports.getEmployers = catchAsync(async (req, res, next) => {
-  getAllUsers(req, res, User.find().where("role").equals("employer"), next);
+  const queryObject = url.parse(req.url, true).query;
+  let role;
+  try {
+    role = queryObject.role;
+  } catch {
+    role = null;
+  }
+  if (!role) {
+    getAllUsers(req, res, User.find(), next);
+  } else if (role == "employee") {
+    getAllUsers(req, res, User.find().where("role").equals("employee"), next);
+  } else {
+    getAllUsers(req, res, User.find().where("role").equals("employer"), next);
+  }
 });
