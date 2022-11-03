@@ -35,23 +35,6 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-/**
- * @swagger
- *  components:
- *    schemas:
- *      user:
- *        type: object
- *        properties:
- *          name:
- *            type: string
- *            description: Manager address
- *          email:
- *            type: string
- *            description: Manager username or null
- *          role:
- *            type: string
- *            description: True if manager deleted account
- */
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -102,9 +85,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   //3) check if user still exists
-  const freshUser = await User.findById(decoded.id)
-    .select("+commentsGiven")
-    .select("+ratingsGiven");
+  const freshUser = await User.findById(decoded.id);
   if (!freshUser) {
     return next(
       new AppError("The user beloging to this token no longer exists.", 401)

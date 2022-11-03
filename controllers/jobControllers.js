@@ -23,7 +23,6 @@ checkJobBelgonsToEmployer = async (req) => {
 };
 //move this to utils
 getAll = async (req, res, query, next) => {
-  console.log("entrou no get all");
   const apiFeatures = new FormatResponse(query, req.query)
     .limitFields()
     .paginate();

@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please provide your role"],
     enum: ["employer", "employee"],
   },
-  passwordChangedAt: Date, //TODO select false
+  passwordChangedAt: { type: Date, select: false },
   password: {
     type: String,
     required: [true, "Please provide a password"],
@@ -55,8 +55,8 @@ const userSchema = new mongoose.Schema({
     },
     select: false,
   },
-  passwordResetToken: String, //TODO select false
-  passwordResetExpires: Date, //TODO select false
+  passwordResetToken: { type: String, select: false },
+  passwordResetExpires: { type: Date, select: false },
   active: {
     type: Boolean,
     default: true,
@@ -65,10 +65,6 @@ const userSchema = new mongoose.Schema({
   category: [String],
   description: String,
   location: String,
-  comments: [String],
-  ratings: [Number],
-  commentsGiven: { type: { id: String, comment: String }, select: false },
-  ratingsGiven: { type: { id: String, rating: Number }, select: false },
 });
 
 userSchema.pre("save", async function (next) {

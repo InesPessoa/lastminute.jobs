@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const applicationSchema = new mongoose.Schema({
   employerId: {
-    type: String,
+    type: String, // Todo replace with reference
     required: [true, "An appplication needs an employer id associated."],
   },
   employeeId: {
-    type: String,
+    type: String, // Todo replace with reference
     required: [true, "An appplication needs an employee id associated."],
   },
   jobId: {
-    type: String,
+    type: String, // Todo replace with reference
     required: [true, "An appplication needs a job id associated."],
   },
   dateSubmited: {

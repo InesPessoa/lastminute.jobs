@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema({
   employerId: {
-    type: String,
+    type: String, //TODO replace with reference
     required: [true, "A job needs an employer id associated."],
   },
   employeeId: {
-    type: [String],
+    type: [String], //TODO replace with reference
     default: [],
   },
   nPositions: {
