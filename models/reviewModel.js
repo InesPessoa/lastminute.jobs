@@ -31,17 +31,15 @@ reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: "userId",
     select: "-__v",
-  })
-    .populate({
-      path: "jobId",
-      select: "-__v",
-    })
-    .populate({
-      path: "applicationId",
-      select: "-__v",
-    });
+  }).populate({
+    path: "jobId",
+    select: "-__v",
+  });
   next();
 });
+
+//prevent duplicated reviews
+reviewSchema.index({ userId: 1, jobId: 1 }, { unique: true });
 
 const Review = mongoose.model("Review", reviewSchema);
 module.exports = Review;
