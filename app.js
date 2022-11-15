@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const userRouter = require("./routes/userRoutes.js");
 const jobRouter = require("./routes/jobRoutes");
 const applicationRouter = require("./routes/applicationRoutes");
+const reviewsRouter = require("./routes/reviewRoutes");
 const errorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const swaggerJSDoc = require("swagger-jsdoc");
@@ -50,6 +51,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/jobs", jobRouter);
 app.use("/api/v1/applications", applicationRouter);
+app.use("/api/v1/reviews", reviewsRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`can't find ${req.originalUrl} on the server!`, 404));

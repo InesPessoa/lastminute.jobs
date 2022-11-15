@@ -68,7 +68,7 @@ exports.apply = catchAsync(async (req, res, next) => {
   }
   //confirm that the job exists, and is open, confirm the execution date
   if (!job) {
-    return next(new AppError("Thejob doesn't exist", 404));
+    return next(new AppError("The job doesn't exist", 404));
   }
   if (job.status != "open") {
     return next(new AppError("The job is no longer open", 400));

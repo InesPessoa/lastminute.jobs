@@ -117,3 +117,5 @@ exports.deleteJob = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+// add nested endpoints to list reviews of a job
