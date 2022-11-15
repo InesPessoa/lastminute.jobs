@@ -8,6 +8,10 @@ const errorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const hpp = require("hpp");
 
 const swaggerDefinition = {
   openapi: "3.0.0",
