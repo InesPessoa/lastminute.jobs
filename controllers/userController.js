@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const factory = require("./../controllers/handlerFactory");
 const FormatResponse = require("../utils/formatResponse");
 const { filterObj } = require("./../utils/editRequest");
 const url = require("url");
@@ -70,7 +71,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
+exports.getAllUsersByRole = catchAsync(async (req, res, next) => {
   const queryObject = url.parse(req.url, true).query;
   let role;
   try {
@@ -78,6 +79,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   } catch {
     role = null;
   }
+  console.log(role);
   if (!role) {
     getAllUsers(req, res, User.find(), next);
   } else if (role == "employee") {
@@ -86,3 +88,5 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     getAllUsers(req, res, User.find().where("role").equals("employer"), next);
   }
 });
+
+exports.listAllUsers = factory.getAll(User);

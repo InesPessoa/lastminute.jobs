@@ -2,8 +2,11 @@ const express = require("express");
 const User = require("../models/userModel");
 const authController = require("./../controllers/authController");
 const userController = require("./../controllers/userController");
+const reviewRouter = require("./../routes/reviewRoutes");
 
 const router = express.Router();
+
+router.use("/:userId/reviews", reviewRouter);
 
 /**
  * @swagger
@@ -284,7 +287,7 @@ router
 
 /**
  * @swagger
- * /api/v1/users/:
+ * /api/v1/users/role:
  *   get:
  *     summary:
  *     description:
@@ -315,8 +318,8 @@ router
  *       - api_auth:
  *       - "write:modify":
  */
-router.get("/", authController.protect, userController.getAllUsers);
+router.get("/role", authController.protect, userController.getAllUsersByRole);
 
-//TODO post a comments and rating
+router.get("/", authController.protect, userController.listAllUsers);
 
 module.exports = router;

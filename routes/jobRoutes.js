@@ -2,7 +2,11 @@ const express = require("express");
 const authController = require("./../controllers/authController");
 const jobController = require("./../controllers/jobControllers");
 
+const reviewRouter = require("./../routes/reviewRoutes");
+
 const router = express.Router();
+
+router.use("/:jobId/reviews", reviewRouter);
 
 router
   .route("/openJobs")
